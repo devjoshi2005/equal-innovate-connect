@@ -1,17 +1,20 @@
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter, Users, Calendar, Target, Globe } from 'lucide-react';
+import { Search, Filter, Users, Calendar, Target, Globe, ArrowLeft, Plus, Heart, MessageCircle } from 'lucide-react';
 import { projectsApi, ProjectFilters } from '@/services/projectsApi';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 
 const ExploreProjects = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [filters, setFilters] = useState<ProjectFilters>({});
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -32,18 +35,25 @@ const ExploreProjects = () => {
     }));
   };
 
+  const joinProjectMutation = useMutation({
+    mutationFn: ({ projectId, userId }: { projectId: string; userId: string }) =>
+      projectsApi.joinProject(projectId, userId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['projects'] });
+      toast.success('Successfully joined the project!');
+    },
+    onError: (error: any) => {
+      toast.error(error.message);
+    },
+  });
+
   const handleJoinProject = async (projectId: string) => {
     if (!user) {
       toast.error('Please sign in to join projects');
       return;
     }
 
-    try {
-      await projectsApi.joinProject(projectId, user.id);
-      toast.success('Successfully joined the project!');
-    } catch (error: any) {
-      toast.error(error.message);
-    }
+    joinProjectMutation.mutate({ projectId, userId: user.id });
   };
 
   const getSDGBadgeColor = (sdg: string) => {
@@ -82,14 +92,34 @@ const ExploreProjects = () => {
       <header className="border-b border-border/50 backdrop-blur-sm bg-background/80 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-                <Globe className="w-6 h-6 text-primary-foreground" />
+            <div className="flex items-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate('/')}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Home
+              </Button>
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center">
+                  <Globe className="w-6 h-6 text-primary-foreground" />
+                </div>
+                <h1 className="text-xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
+                  Explore Projects
+                </h1>
               </div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-primary via-accent to-secondary bg-clip-text text-transparent">
-                Explore Projects
-              </h1>
             </div>
+            {user && (
+              <Button 
+                onClick={() => navigate('/projects/create')}
+                className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Create Project
+              </Button>
+            )}
           </div>
         </div>
       </header>
@@ -121,6 +151,49 @@ const ExploreProjects = () => {
             </Select>
           </div>
         </div>
+
+        {/* Stats Section */}
+        {projects && projects.length > 0 && (
+          <div className="mb-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <Globe className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">{projects.length}</p>
+                  <p className="text-sm text-muted-foreground">Active Projects</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-secondary/10 flex items-center justify-center">
+                  <Users className="w-5 h-5 text-secondary" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">
+                    {projects.reduce((total, project) => total + ((project.team_members as string[])?.length || 0), 0)}
+                  </p>
+                  <p className="text-sm text-muted-foreground">Total Members</p>
+                </div>
+              </div>
+            </Card>
+            <Card className="p-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-accent/10 flex items-center justify-center">
+                  <Target className="w-5 h-5 text-accent" />
+                </div>
+                <div>
+                  <p className="text-2xl font-bold">
+                    {new Set(projects.flatMap(p => (p.sdg_alignment as string[]) || [])).size}
+                  </p>
+                  <p className="text-sm text-muted-foreground">SDGs Covered</p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        )}
 
         {/* Projects Grid */}
         {isLoading ? (
@@ -182,11 +255,13 @@ const ExploreProjects = () => {
                       size="sm" 
                       className="flex-1"
                       onClick={() => handleJoinProject(project.project_id)}
+                      disabled={joinProjectMutation.isPending}
                     >
-                      Join Project
+                      {joinProjectMutation.isPending ? 'Joining...' : 'Join Project'}
                     </Button>
                     <Button size="sm" variant="outline">
-                      View Details
+                      <MessageCircle className="w-4 h-4 mr-1" />
+                      Details
                     </Button>
                   </div>
                 </CardContent>
