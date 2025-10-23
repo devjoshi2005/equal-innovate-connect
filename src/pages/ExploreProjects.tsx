@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Search, Filter, Users, Calendar, Target, Globe, ArrowLeft, Plus, Heart, MessageCircle } from 'lucide-react';
+import { Search, Filter, Users, Target, Globe, ArrowLeft, Plus } from 'lucide-react';
 import { projectsApi, ProjectFilters } from '@/services/projectsApi';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
+import { ProjectCard } from '@/components/projects/ProjectCard';
+import { ProjectDetails } from '@/components/projects/ProjectDetails';
 
 const ExploreProjects = () => {
   const { user } = useAuth();
@@ -17,6 +18,8 @@ const ExploreProjects = () => {
   const queryClient = useQueryClient();
   const [filters, setFilters] = useState<ProjectFilters>({});
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
   const { data: projects, isLoading, error } = useQuery({
     queryKey: ['projects', filters],
@@ -56,23 +59,16 @@ const ExploreProjects = () => {
     joinProjectMutation.mutate({ projectId, userId: user.id });
   };
 
-  const getSDGBadgeColor = (sdg: string) => {
-    const colors: { [key: string]: string } = {
-      '5': 'bg-pink-100 text-pink-800 border-pink-200',
-      '9': 'bg-blue-100 text-blue-800 border-blue-200',
-      '10': 'bg-orange-100 text-orange-800 border-orange-200',
-    };
-    return colors[sdg] || 'bg-gray-100 text-gray-800 border-gray-200';
+  const handleViewDetails = (projectId: string) => {
+    setSelectedProjectId(projectId);
+    setIsDetailsOpen(true);
   };
 
-  const getSDGName = (sdg: string) => {
-    const names: { [key: string]: string } = {
-      '5': 'Gender Equality',
-      '9': 'Industry & Innovation',
-      '10': 'Reduced Inequalities',
-    };
-    return names[sdg] || `SDG ${sdg}`;
+  const handleCloseDetails = () => {
+    setIsDetailsOpen(false);
+    setSelectedProjectId(null);
   };
+
 
   if (error) {
     return (
@@ -216,56 +212,13 @@ const ExploreProjects = () => {
         ) : projects && projects.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {projects.map((project) => (
-              <Card key={project.project_id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-1">
-                      <CardTitle className="text-lg">{project.title}</CardTitle>
-                      <CardDescription className="text-sm">
-                        by {project.creator?.username || 'Unknown'}
-                      </CardDescription>
-                    </div>
-                    <div className="flex flex-wrap gap-1">
-                      {(project.sdg_alignment as string[])?.map((sdg) => (
-                        <Badge key={sdg} className={`text-xs ${getSDGBadgeColor(sdg)}`}>
-                          {getSDGName(sdg)}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <p className="text-sm text-muted-foreground line-clamp-3">
-                    {project.description}
-                  </p>
-                  
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                    <div className="flex items-center gap-1">
-                      <Users className="w-4 h-4" />
-                      <span>{(project.team_members as string[])?.length || 0} members</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Target className="w-4 h-4" />
-                      <span>Active</span>
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button 
-                      size="sm" 
-                      className="flex-1"
-                      onClick={() => handleJoinProject(project.project_id)}
-                      disabled={joinProjectMutation.isPending}
-                    >
-                      {joinProjectMutation.isPending ? 'Joining...' : 'Join Project'}
-                    </Button>
-                    <Button size="sm" variant="outline">
-                      <MessageCircle className="w-4 h-4 mr-1" />
-                      Details
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+              <ProjectCard
+                key={project.project_id}
+                project={project}
+                onJoinProject={handleJoinProject}
+                onViewDetails={handleViewDetails}
+                isJoining={joinProjectMutation.isPending}
+              />
             ))}
           </div>
         ) : (
@@ -286,6 +239,13 @@ const ExploreProjects = () => {
           </div>
         )}
       </div>
+
+      {/* Project Details Modal */}
+      <ProjectDetails
+        projectId={selectedProjectId}
+        isOpen={isDetailsOpen}
+        onClose={handleCloseDetails}
+      />
     </div>
   );
 };
