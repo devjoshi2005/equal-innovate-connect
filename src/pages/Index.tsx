@@ -1,9 +1,25 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Users, Lightbulb, Award, Globe, Target, Handshake, Rocket, BookOpen } from "lucide-react";
+import { Users, Lightbulb, Award, Globe, Target, Handshake, Rocket, BookOpen, LogOut } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const Index = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleAuthAction = () => {
+    if (user) {
+      supabase.auth.signOut();
+      toast.success("Signed out successfully");
+    } else {
+      navigate("/auth");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -21,7 +37,20 @@ const Index = () => {
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#impact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Impact</a>
             <a href="#community" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Community</a>
-            <Button size="sm" className="bg-gradient-to-r from-primary to-accent hover:opacity-90">Join Now</Button>
+            <Button 
+              size="sm" 
+              className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
+              onClick={handleAuthAction}
+            >
+              {user ? (
+                <>
+                  <LogOut className="w-4 h-4 mr-2" />
+                  Sign Out
+                </>
+              ) : (
+                "Join Now"
+              )}
+            </Button>
           </nav>
         </div>
       </header>
@@ -43,8 +72,12 @@ const Index = () => {
               A platform where diverse voices drive sustainable innovation. Connect with mentors, collaborate on impactful projects, and access resources to build a more equitable future.
             </p>
             <div className="flex flex-wrap justify-center gap-4 pt-4">
-              <Button size="lg" className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-lg px-8">
-                Get Started
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-primary to-accent hover:opacity-90 text-lg px-8"
+                onClick={handleAuthAction}
+              >
+                {user ? "Dashboard" : "Get Started"}
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8">
                 Learn More
@@ -236,9 +269,14 @@ const Index = () => {
               Join thousands of innovators, mentors, and change-makers building a more equitable future.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
-              <Button size="lg" variant="secondary" className="text-lg px-8">
+              <Button 
+                size="lg" 
+                variant="secondary" 
+                className="text-lg px-8"
+                onClick={handleAuthAction}
+              >
                 <Handshake className="w-5 h-5 mr-2" />
-                Join the Community
+                {user ? "View Profile" : "Join the Community"}
               </Button>
               <Button size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white/30 text-white hover:bg-white/20">
                 <Target className="w-5 h-5 mr-2" />
