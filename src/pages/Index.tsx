@@ -11,10 +11,14 @@ const Index = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const handleAuthAction = () => {
+  const handleAuthAction = async () => {
     if (user) {
-      supabase.auth.signOut();
-      toast.success("Signed out successfully");
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        toast.error("Error signing out");
+      } else {
+        toast.success("Signed out successfully");
+      }
     } else {
       navigate("/auth");
     }
@@ -278,7 +282,12 @@ const Index = () => {
                 <Handshake className="w-5 h-5 mr-2" />
                 {user ? "View Profile" : "Join the Community"}
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 bg-white/10 border-white/30 text-white hover:bg-white/20">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="text-lg px-8 bg-white/10 border-white/30 text-white hover:bg-white/20"
+                onClick={() => navigate('/projects')}
+              >
                 <Target className="w-5 h-5 mr-2" />
                 Explore Projects
               </Button>
