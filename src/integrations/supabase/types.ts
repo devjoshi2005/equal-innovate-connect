@@ -82,6 +82,42 @@ export type Database = {
         }
         Relationships: []
       }
+      community_posts: {
+        Row: {
+          content: string
+          created_at: string
+          post_id: string
+          sdg_badges: Json | null
+          skills_criteria: Json | null
+          title: string
+          updated_at: string
+          upvotes: number | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          post_id?: string
+          sdg_badges?: Json | null
+          skills_criteria?: Json | null
+          title: string
+          updated_at?: string
+          upvotes?: number | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          post_id?: string
+          sdg_badges?: Json | null
+          skills_criteria?: Json | null
+          title?: string
+          updated_at?: string
+          upvotes?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       mentorship_connections: {
         Row: {
           connection_id: string
@@ -121,6 +157,38 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "users"
             referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      post_comments: {
+        Row: {
+          comment_id: string
+          content: string
+          created_at: string
+          post_id: string
+          user_id: string
+        }
+        Insert: {
+          comment_id?: string
+          content: string
+          created_at?: string
+          post_id: string
+          user_id: string
+        }
+        Update: {
+          comment_id?: string
+          content?: string
+          created_at?: string
+          post_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_comments_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["post_id"]
           },
         ]
       }

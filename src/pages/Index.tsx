@@ -44,7 +44,7 @@ const Index = () => {
           <nav className="hidden md:flex items-center gap-6">
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#impact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Impact</a>
-            <a href="#community" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Community</a>
+            <button onClick={() => navigate('/community')} className="text-sm text-muted-foreground hover:text-foreground transition-colors">Community</button>
             {user ? (
               <Button 
                 size="sm" 

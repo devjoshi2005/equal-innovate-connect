@@ -9,6 +9,10 @@ import Auth from "./pages/Auth";
 import ExploreProjects from "./pages/ExploreProjects";
 import MyProjects from "./pages/MyProjects";
 import Dashboard from "./pages/Dashboard";
+import Community from "./pages/Community";
+import CreateProject from "./pages/projects/CreateProject";
+import UpdateProject from "./pages/projects/UpdateProject";
+import ViewProject from "./pages/projects/ViewProject";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +30,10 @@ const App = () => (
             <Route path="/projects" element={<MyProjects />} />
             <Route path="/explore" element={<ExploreProjects />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/community" element={<Community />} />
+            <Route path="/project/create" element={<CreateProject />} />
+            <Route path="/project/update/:id" element={<UpdateProject />} />
+            <Route path="/project/:id" element={<ViewProject />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

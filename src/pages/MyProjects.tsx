@@ -37,7 +37,7 @@ const MyProjects = () => {
   });
 
   const handleViewDetails = (projectId: string) => {
-    toast.info('View details coming soon');
+    navigate(`/project/${projectId}`);
   };
 
   const handleJoinProject = () => {
@@ -83,7 +83,7 @@ const MyProjects = () => {
               </div>
             </div>
             <Button 
-              onClick={() => navigate('/projects/create')}
+              onClick={() => navigate('/project/create')}
               className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
             >
               <Plus className="w-4 h-4 mr-2" />
@@ -173,7 +173,7 @@ const MyProjects = () => {
             <p className="text-muted-foreground mb-4">
               Create your first project to get started
             </p>
-            <Button onClick={() => navigate('/projects/create')}>
+            <Button onClick={() => navigate('/project/create')}>
               <Plus className="w-4 h-4 mr-2" />
               Create Project
             </Button>
