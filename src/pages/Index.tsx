@@ -289,7 +289,7 @@ const Index = () => {
                 onClick={() => navigate('/projects')}
               >
                 <Target className="w-5 h-5 mr-2" />
-                Explore Projects
+                My Projects
               </Button>
             </div>
           </div>
