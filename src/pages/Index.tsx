@@ -13,14 +13,18 @@ const Index = () => {
 
   const handleAuthAction = async () => {
     if (user) {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        toast.error("Error signing out");
-      } else {
-        toast.success("Signed out successfully");
-      }
+      navigate("/dashboard");
     } else {
       navigate("/auth");
+    }
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error("Error signing out");
+    } else {
+      toast.success("Signed out successfully");
     }
   };
 
@@ -41,20 +45,23 @@ const Index = () => {
             <a href="#features" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Features</a>
             <a href="#impact" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Impact</a>
             <a href="#community" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Community</a>
-            <Button 
-              size="sm" 
-              className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
-              onClick={handleAuthAction}
-            >
-              {user ? (
-                <>
-                  <LogOut className="w-4 h-4 mr-2" />
-                  Sign Out
-                </>
-              ) : (
-                "Join Now"
-              )}
-            </Button>
+            {user ? (
+              <Button 
+                size="sm" 
+                variant="outline"
+                onClick={() => navigate('/dashboard')}
+              >
+                Dashboard
+              </Button>
+            ) : (
+              <Button 
+                size="sm" 
+                className="bg-gradient-to-r from-primary to-accent hover:opacity-90"
+                onClick={handleAuthAction}
+              >
+                Join Now
+              </Button>
+            )}
           </nav>
         </div>
       </header>
