@@ -118,6 +118,42 @@ export type Database = {
         }
         Relationships: []
       }
+      mentorship_applications: {
+        Row: {
+          application_id: string
+          application_type: string
+          availability: string | null
+          created_at: string | null
+          expertise_areas: Json | null
+          motivation: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          application_id?: string
+          application_type: string
+          availability?: string | null
+          created_at?: string | null
+          expertise_areas?: Json | null
+          motivation?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          application_id?: string
+          application_type?: string
+          availability?: string | null
+          created_at?: string | null
+          expertise_areas?: Json | null
+          motivation?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       mentorship_connections: {
         Row: {
           connection_id: string
@@ -236,6 +272,8 @@ export type Database = {
           email: string
           gender_identity: string | null
           location: string | null
+          quiz_attempts: number | null
+          quiz_score: number | null
           sdg_focus_areas: Json | null
           skills: Json | null
           user_id: string
@@ -246,6 +284,8 @@ export type Database = {
           email: string
           gender_identity?: string | null
           location?: string | null
+          quiz_attempts?: number | null
+          quiz_score?: number | null
           sdg_focus_areas?: Json | null
           skills?: Json | null
           user_id?: string
@@ -256,6 +296,8 @@ export type Database = {
           email?: string
           gender_identity?: string | null
           location?: string | null
+          quiz_attempts?: number | null
+          quiz_score?: number | null
           sdg_focus_areas?: Json | null
           skills?: Json | null
           user_id?: string

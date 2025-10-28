@@ -13,6 +13,11 @@ import Community from "./pages/Community";
 import CreateProject from "./pages/projects/CreateProject";
 import UpdateProject from "./pages/projects/UpdateProject";
 import ViewProject from "./pages/projects/ViewProject";
+import Pricing from "./pages/Pricing";
+import Challenges from "./pages/Challenges";
+import Mentors from "./pages/Mentors";
+import MentorsConfirmed from "./pages/MentorsConfirmed";
+import Support from "./pages/Support";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -34,6 +39,11 @@ const App = () => (
             <Route path="/project/create" element={<CreateProject />} />
             <Route path="/project/update/:id" element={<UpdateProject />} />
             <Route path="/project/:id" element={<ViewProject />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/challenges" element={<Challenges />} />
+            <Route path="/mentors" element={<Mentors />} />
+            <Route path="/mentors/confirmed" element={<MentorsConfirmed />} />
+            <Route path="/support" element={<Support />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
