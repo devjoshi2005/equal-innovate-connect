@@ -321,25 +321,25 @@ const Index = () => {
             <div>
               <h5 className="font-semibold mb-4">Platform</h5>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Features</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">How It Works</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Pricing</a></li>
+                <li><button onClick={() => navigate('/features')} className="hover:text-foreground transition-colors">Features</button></li>
+                <li><a href="#community" className="hover:text-foreground transition-colors">How It Works</a></li>
+                <li><button onClick={() => navigate('/pricing')} className="hover:text-foreground transition-colors">Pricing</button></li>
               </ul>
             </div>
             <div>
               <h5 className="font-semibold mb-4">Community</h5>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Mentors</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Projects</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Challenges</a></li>
+                <li><button onClick={() => navigate('/mentors')} className="hover:text-foreground transition-colors">Mentors</button></li>
+                <li><button onClick={() => navigate('/projects')} className="hover:text-foreground transition-colors">Projects</button></li>
+                <li><button onClick={() => navigate('/challenges')} className="hover:text-foreground transition-colors">Challenges</button></li>
               </ul>
             </div>
             <div>
               <h5 className="font-semibold mb-4">Resources</h5>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">SDG Guidelines</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Support</a></li>
+                <li><a href="#impact" className="hover:text-foreground transition-colors">SDG Guidelines</a></li>
+                <li><button onClick={() => navigate('/community')} className="hover:text-foreground transition-colors">Community</button></li>
+                <li><button onClick={() => navigate('/support')} className="hover:text-foreground transition-colors">Support</button></li>
               </ul>
             </div>
           </div>

@@ -18,6 +18,7 @@ import Challenges from "./pages/Challenges";
 import Mentors from "./pages/Mentors";
 import MentorsConfirmed from "./pages/MentorsConfirmed";
 import Support from "./pages/Support";
+import Features from "./pages/Features";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/mentors" element={<Mentors />} />
             <Route path="/mentors/confirmed" element={<MentorsConfirmed />} />
             <Route path="/support" element={<Support />} />
+            <Route path="/features" element={<Features />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
